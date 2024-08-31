@@ -1,0 +1,12 @@
+build~=1.2.1
+coverage~=7.6.1
+flake8~=7.1.1
+interrogate~=1.7.0
+mypy~=1.11.1
+numpy~=2.0.1
+open-spiel~=1.5
+pokerkit~=0.5.2
+scipy~=1.14.0
+Sphinx~=7.4.7
+sphinx-rtd-theme~=2.0.0
+twine~=5.1.1
