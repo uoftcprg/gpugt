@@ -222,15 +222,15 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
 
     def _setup_iteration(self) -> None:
         self._setup_expected_payoffs()
-        self._setup_excepted_reach_probabilities()
+        self._setup_reach_probabilities()
         self._setup_average_strategy_profile()
         self._setup_next_strategy_profile()
 
     def iterate(self) -> None:
         self._calculate_strategies()
         self._calculate_expected_payoffs()
-        self._calculate_excepted_reach_probabilities()
-        self._calculate_counterfactual_reach_probability_terms()
+        self._calculate_reach_probabilities()
+        self._calculate_reach_probability_terms()
         self._calculate_average_strategy_profile()
         self._calculate_next_strategy_profile()
 
@@ -267,47 +267,67 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
                 @ self._expected_payoffs
             )
 
+    _initial_reach_probabilities: Any = field(init=False)
+    _player_strategies: Any = field(init=False)
+    _player_reach_probabilities: Any = field(init=False)
     _excepted_strategies: Any = field(init=False)
-    _initial_excepted_reach_probabilities: Any = field(init=False)
     _excepted_reach_probabilities: Any = field(init=False)
 
-    def _setup_excepted_reach_probabilities(self) -> None:
-        self._initial_excepted_reach_probabilities = cp.zeros(
+    def _setup_reach_probabilities(self) -> None:
+        self._initial_reach_probabilities = cp.zeros(
             (len(self.nodes), len(self.players)),
         )
         v = self._nodes[self.game.initial_node]
-        self._initial_excepted_reach_probabilities[v] = 1
+        self._initial_reach_probabilities[v] = 1
 
-    def _calculate_excepted_reach_probabilities(self) -> None:
+    def _calculate_reach_probabilities(self) -> None:
+        self._player_strategies = cp.broadcast_to(
+            self._strategies,
+            (len(self.players), len(self.nodes)),
+        ).T.copy()
+        self._player_strategies[~self._node_player_mask] = 1
+        self._player_reach_probabilities = (
+            self._initial_reach_probabilities.copy()
+        )
+
         self._excepted_strategies = cp.broadcast_to(
             self._strategies,
             (len(self.players), len(self.nodes)),
         ).T.copy()
         self._excepted_strategies[self._node_player_mask] = 1
         self._excepted_reach_probabilities = (
-            self._initial_excepted_reach_probabilities.copy()
+            self._initial_reach_probabilities.copy()
         )
 
         for level_graph in self._level_graphs:
+            self._player_reach_probabilities += (
+                (level_graph.T @ self._player_reach_probabilities)
+                * self._player_strategies
+            )
             self._excepted_reach_probabilities += (
                 (level_graph.T @ self._excepted_reach_probabilities)
                 * self._excepted_strategies
             )
 
+    _reach_probability_terms: Any = field(init=False)
     _counterfactual_reach_probability_terms: Any = field(init=False)
 
-    def _calculate_counterfactual_reach_probability_terms(self) -> None:
+    def _calculate_reach_probability_terms(self) -> None:
+        self._reach_probability_terms = (
+            self._node_player_mask
+            * self._player_reach_probabilities
+        ).sum(1)
         self._counterfactual_reach_probability_terms = (
             self._node_player_mask
             * self._excepted_reach_probabilities
         ).sum(1)
 
     _information_set_node_mask: Any = field(init=False)
-    _counterfactual_reach_probabilities: Any = field(init=False)
-    _counterfactual_reach_probability_sums: Any = field(init=False)
+    _reach_probabilities: Any = field(init=False)
+    _reach_probability_sums: Any = field(init=False)
     _average_strategy_profile: Any = field(init=False)
 
-    def get_average_strategy(self, information_set: _H, action: _A) -> Any:
+    def get_action_probability(self, information_set: _H, action: _A) -> Any:
         """Return the average strategy for an action.
 
         :param information_set: The information set at which an action
@@ -317,39 +337,39 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
         """
         a = self._actions[information_set, action]
 
-        return self._average_strategy_profile[a]
+        return self._average_strategy_profile[a].item()
+
+    def average_strategy_policy(self, node: _V, action: _A) -> Any:
+        information_set = self.game.information_partition[node]
+        player = self.game.player_partition[information_set]
+
+        if player == self.game.nature:
+            probability = (
+                self.game.nature_probabilities[information_set][action]
+            )
+        else:
+            probability = self.get_action_probability(information_set, action)
+
+        return probability
 
     def _setup_average_strategy_profile(self) -> None:
         self._information_set_node_mask = (
             self._information_set_action_mask
             @ self._action_node_mask
         )
-        self._information_set_action_counts = (
-            self._information_set_action_mask.sum(1).ravel()
-        )
-        self._counterfactual_reach_probability_sums = cp.zeros(
-            len(self.information_sets),
-        )
+        self._reach_probability_sums = cp.zeros(len(self.information_sets))
         self._average_strategy_profile = cp.zeros(len(self.actions))
 
     def _calculate_average_strategy_profile(self) -> None:
-        self._counterfactual_reach_probabilities = (
-            (
-                self._information_set_node_mask
-                @ self._counterfactual_reach_probability_terms
-            )
-            / self._information_set_action_counts
+        self._reach_probabilities = (
+            self._information_set_node_mask
+            @ self._reach_probability_terms
         )
-        self._counterfactual_reach_probability_sums += (
-            self._counterfactual_reach_probabilities
-        )
+        self._reach_probability_sums += self._reach_probabilities
         self._average_strategy_profile += (
             (
                 self._information_set_action_mask.T
-                @ (
-                    self._counterfactual_reach_probabilities
-                    / self._counterfactual_reach_probability_sums
-                )
+                @ (self._reach_probabilities / self._reach_probability_sums)
             )
             * (self._strategy_profile - self._average_strategy_profile)
         )
