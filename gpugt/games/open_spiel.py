@@ -2,7 +2,6 @@
 OpenSpiel.
 """
 
-from copy import deepcopy
 from typing import Any
 from warnings import warn
 
@@ -85,9 +84,8 @@ def create_open_spiel(game: Game) -> FiniteExtensiveFormGame[_V, _H, _A, _I]:
                 )
 
             for action in sub_actions:
-                child = deepcopy(vertex)
+                child = vertex.child(action)
 
-                child.apply_action(action)
                 update(child, vertex, action)
 
     update(root, None, None)
