@@ -29,6 +29,7 @@ _V = TypeVar('_V', bound=Hashable)
 _H = TypeVar('_H', bound=Hashable)
 _A = TypeVar('_A', bound=Hashable)
 _I = TypeVar('_I', bound=Hashable)
+DTYPE = cp.float64
 
 
 @dataclass
@@ -137,11 +138,11 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
 
                 next_level_nodes.update(successors)
 
-            self._level_graphs.append(csr_matrix(level_graph))
+            self._level_graphs.append(csr_matrix(level_graph, dtype=DTYPE))
 
             level_nodes = next_level_nodes
 
-        self._graph = csr_matrix(self._graph)
+        self._graph = csr_matrix(self._graph, dtype=DTYPE)
 
         assert not self._level_graphs[-1].count_nonzero()
 
@@ -180,11 +181,15 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
             self._information_set_action_mask[h, a] = 1
             self._node_player_mask[v, i] = True
 
-        self._action_node_mask = csr_matrix(self._action_node_mask)
+        self._action_node_mask = csr_matrix(
+            self._action_node_mask,
+            dtype=DTYPE,
+        )
         self._information_set_action_mask = csr_matrix(
             self._information_set_action_mask,
+            dtype=DTYPE,
         )
-        self._nature_strategies = cp.zeros(len(self.nodes))
+        self._nature_strategies = cp.zeros(len(self.nodes), dtype=DTYPE)
 
         for node in self.nodes:
             if (
@@ -250,6 +255,7 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
     def _setup_expected_payoffs(self) -> None:
         self._initial_expected_payoffs = cp.zeros(
             (len(self.nodes), len(self.players)),
+            dtype=DTYPE,
         )
 
         for node, payoffs in self.game.payoffs.items():
@@ -276,6 +282,7 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
     def _setup_reach_probabilities(self) -> None:
         self._initial_reach_probabilities = cp.zeros(
             (len(self.nodes), len(self.players)),
+            dtype=DTYPE,
         )
         v = self._nodes[self.game.initial_node]
         self._initial_reach_probabilities[v] = 1
@@ -357,8 +364,14 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
             self._information_set_action_mask
             @ self._action_node_mask
         )
-        self._reach_probability_sums = cp.zeros(len(self.information_sets))
-        self._average_strategy_profile = cp.zeros(len(self.actions))
+        self._reach_probability_sums = cp.zeros(
+            len(self.information_sets),
+            dtype=DTYPE,
+        )
+        self._average_strategy_profile = cp.zeros(
+            len(self.actions),
+            dtype=DTYPE,
+        )
 
     def _calculate_average_strategy_profile(self) -> None:
         self._reach_probabilities = (
@@ -380,7 +393,10 @@ class CounterfactualRegretMinimization(Generic[_V, _H, _A, _I]):
     _clipped_average_counterfactual_regrets: Any = field(init=False)
 
     def _setup_next_strategy_profile(self) -> None:
-        self._average_counterfactual_regrets = cp.zeros(len(self.actions))
+        self._average_counterfactual_regrets = cp.zeros(
+            len(self.actions),
+            dtype=DTYPE,
+        )
 
     def _calculate_next_strategy_profile(self) -> None:
         self._regrets = (
