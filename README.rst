@@ -2,6 +2,8 @@
 GPUGT
 =====
 
+GPU parallelizable implementation of counterfactual regret minimization.
+
 Citing
 ------
 
