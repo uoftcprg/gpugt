@@ -184,45 +184,45 @@ python scripts/open-spiel-solve.py \
     kuhn_poker \
     pyspiel.CFRSolver \
     1024 \
-    -e figures/open-spiel/exploitabilities/kuhn-poker.pdf \
-    > data/open-spiel/kuhn-poker.json
+    -e figures/pyspiel/exploitabilities/kuhn-poker.pdf \
+    > data/pyspiel/kuhn-poker.json
 python scripts/open-spiel-solve.py \
     leduc_poker \
     pyspiel.CFRSolver \
     1024 \
-    -e figures/open-spiel/exploitabilities/leduc-poker.pdf \
-    > data/open-spiel/leduc-poker.json
+    -e figures/pyspiel/exploitabilities/leduc-poker.pdf \
+    > data/pyspiel/leduc-poker.json
 python scripts/open-spiel-solve.py \
     liars_dice \
     pyspiel.CFRSolver \
     1024 \
-    -e figures/open-spiel/exploitabilities/liars-dice.pdf \
-    > data/open-spiel/liars-dice.json
+    -e figures/pyspiel/exploitabilities/liars-dice.pdf \
+    > data/pyspiel/liars-dice.json
 python scripts/open-spiel-solve.py \
     'battleship(board_height=2,board_width=2,ship_sizes=[2],ship_values=[1],num_shots=3)' \
     pyspiel.CFRSolver \
     8 \
-    > data/open-spiel/battleship-tiny.json
+    > data/pyspiel/battleship-tiny.json
 python scripts/open-spiel-solve.py \
     'battleship(board_height=3,board_width=2,ship_sizes=[2],ship_values=[1],num_shots=3)' \
     pyspiel.CFRSolver \
     8 \
-    > data/open-spiel/battleship-small.json
+    > data/pyspiel/battleship-small.json
 python scripts/open-spiel-solve.py \
     'battleship(board_height=4,board_width=4,ship_sizes=[1],ship_values=[1],num_shots=2)' \
     pyspiel.CFRSolver \
     8 \
-    > data/open-spiel/battleship-medium.json
+    > data/pyspiel/battleship-medium.json
 python scripts/open-spiel-solve.py \
     'battleship(board_height=3,board_width=3,ship_sizes=[1;2],ship_values=[1;1],num_shots=2)' \
     pyspiel.CFRSolver \
     8 \
-    > data/open-spiel/battleship-large.json
+    > data/pyspiel/battleship-large.json
 python scripts/open-spiel-solve.py \
     'battleship(board_height=3,board_width=2,ship_sizes=[2],ship_values=[1],num_shots=4)' \
     pyspiel.CFRSolver \
     8 \
-    > data/open-spiel/battleship-huge.json
+    > data/pyspiel/battleship-huge.json
 ```
 
 Summarize results.
@@ -246,14 +246,14 @@ python scripts/summary.py \
     data/noregret/battleship-medium.json \
     data/noregret/battleship-large.json \
     data/noregret/battleship-huge.json \
-    data/open-spiel/kuhn-poker.json \
-    data/open-spiel/leduc-poker.json \
-    data/open-spiel/liars-dice.json \
-    data/open-spiel/battleship-tiny.json \
-    data/open-spiel/battleship-small.json \
-    data/open-spiel/battleship-medium.json \
-    data/open-spiel/battleship-large.json \
-    data/open-spiel/battleship-huge.json \
+    data/pyspiel/kuhn-poker.json \
+    data/pyspiel/leduc-poker.json \
+    data/pyspiel/liars-dice.json \
+    data/pyspiel/battleship-tiny.json \
+    data/pyspiel/battleship-small.json \
+    data/pyspiel/battleship-medium.json \
+    data/pyspiel/battleship-large.json \
+    data/pyspiel/battleship-huge.json \
     > data/summary.csv
 python scripts/plot.py \
     figures/iteration-time-plot.pdf \

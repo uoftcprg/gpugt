@@ -13,7 +13,7 @@ SOLVER_NAMES = {
     'noregret.regret_minimizers.CounterfactualRegretMinimization': (
         'Sequence-form (CPU)'
     ),
-    'pyspiel.CFRSolver': 'OpenSpiel (C++)',
+    'pyspiel.CFRSolver': 'Classical (C++)',
 }
 ITERATION_COUNT = int(argv[1])
 DATA_PATHNAMES = argv[2:]
