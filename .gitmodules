@@ -1,0 +1,3 @@
+[submodule "games/LibratusEndgames"]
+	path = games/LibratusEndgames
+	url = https://github.com/Sandholm-Lab/LibratusEndgames.git
