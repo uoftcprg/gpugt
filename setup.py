@@ -60,7 +60,10 @@ setup(
         'Tracker': 'https://github.com/uoftcprg/gpugt/issues',
     },
     packages=find_packages(),
-    install_requires=['numpy>=2.0,<3', 'scipy>=1.14.0,<2'],
+    install_requires=[
+        'numpy>=2.0,<3',
+        'scipy>=1.14.0,<2',
+        'noregret~=0.0.0.dev1',
+    ],
     python_requires='>=3.11',
-    package_data={'gpugt': ['py.typed']},
 )

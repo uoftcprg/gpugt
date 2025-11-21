@@ -1,0 +1,2 @@
+data/gpugt/battleship-huge.json filter=lfs diff=lfs merge=lfs -text
+data/noregret/battleship-huge.json filter=lfs diff=lfs merge=lfs -text
