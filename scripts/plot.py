@@ -4,48 +4,54 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-ITERATION_TIME_PLOT_FILENAME = argv[1]
-MEMORY_USAGE_PLOT_FILENAME = argv[2]
-CUDA_MEMORY_USAGE_PLOT_FILENAME = argv[3]
+PLOT_FILENAME = argv[1]
 
 
 def main():
     df = pd.read_csv(stdin, index_col=0)
 
-    plt.clf()
+    sns.set_theme()
+
+    fig, axes = plt.subplots(1, 3, figsize=(17, 5))
+
     sns.lineplot(
         df,
         x='Game size (# nodes)',
         y='Iteration time (s)',
         hue='Solver',
+        style='Implementation',
+        ax=axes[0],
+        legend=False,
     )
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.title('Iteration time versus game size')
-    plt.savefig(ITERATION_TIME_PLOT_FILENAME)
-
-    plt.clf()
+    axes[0].set_xscale('log')
+    axes[0].set_yscale('log')
+    axes[0].set_title('Iteration time versus game size')
     sns.lineplot(
         df,
         x='Game size (# nodes)',
         y='Memory usage (bytes)',
         hue='Solver',
+        style='Implementation',
+        ax=axes[1],
+        legend=False,
     )
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.title('Memory usage versus game size')
-    plt.savefig(MEMORY_USAGE_PLOT_FILENAME)
-
-    plt.clf()
+    axes[1].set_xscale('log')
+    axes[1].set_yscale('log')
+    axes[1].set_title('Memory usage versus game size')
     sns.lineplot(
-        df[df['CUDA memory usage (bytes)'] != 0],
+        df,
         x='Game size (# nodes)',
         y='CUDA memory usage (bytes)',
+        hue='Solver',
+        style='Implementation',
+        ax=axes[2],
     )
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.title('CUDA memory usage versus game size')
-    plt.savefig(CUDA_MEMORY_USAGE_PLOT_FILENAME)
+    axes[2].set_xscale('log')
+    axes[2].set_yscale('log')
+    axes[2].set_title('CUDA memory usage versus game size')
+    sns.move_legend(axes[2], 'center left', bbox_to_anchor=(1, 0.5))
+    fig.tight_layout()
+    fig.savefig(PLOT_FILENAME)
 
 
 if __name__ == '__main__':

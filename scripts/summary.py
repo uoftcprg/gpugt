@@ -6,6 +6,16 @@ from scipy.stats import sem
 from tqdm import tqdm
 import pandas as pd
 
+IMPLEMENTATION_NAMES = {
+    'gpugt.regret_minimizers.CounterfactualRegretMinimization': (
+        'Sequence-form'
+    ),
+    'noregret.regret_minimizers.CounterfactualRegretMinimization': (
+        'Sequence-form'
+    ),
+    'pyspiel.CFRSolver': 'Classical',
+    'open_spiel.python.algorithms.cfr.CFRSolver': 'Classical',
+}
 SOLVER_NAMES = {
     'gpugt.regret_minimizers.CounterfactualRegretMinimization': (
         'Sequence-form (GPU)'
@@ -14,6 +24,7 @@ SOLVER_NAMES = {
         'Sequence-form (CPU)'
     ),
     'pyspiel.CFRSolver': 'Classical (C++)',
+    'open_spiel.python.algorithms.cfr.CFRSolver': 'Classical (Python)',
 }
 ITERATION_COUNT = int(argv[1])
 DATA_PATHNAMES = argv[2:]
@@ -21,6 +32,7 @@ DATA_PATHNAMES = argv[2:]
 
 def main():
     state_counts = []
+    implementation_names = []
     solver_names = []
     times = []
     time_stderrs = []
@@ -46,13 +58,25 @@ def main():
             state_count = lookup[data['game_name']]
 
         if 'regret_minimizer_import_string' in data:
+            implementation_name = (
+                IMPLEMENTATION_NAMES[data['regret_minimizer_import_string']]
+            )
+        else:
+            implementation_name = (
+                IMPLEMENTATION_NAMES[data['solver_import_string']]
+            )
+
+        if 'regret_minimizer_import_string' in data:
             solver_name = SOLVER_NAMES[data['regret_minimizer_import_string']]
         else:
             solver_name = SOLVER_NAMES[data['solver_import_string']]
 
+        assert len(data['times']) >= ITERATION_COUNT
+
         times_ = data['times'][:ITERATION_COUNT]
 
         state_counts.append(state_count)
+        implementation_names.append(implementation_name)
         solver_names.append(solver_name)
         times.append(fmean(times_))
         time_stderrs.append(sem(times_).item())
@@ -61,6 +85,7 @@ def main():
 
     data = {
         'Game size (# nodes)': state_counts,
+        'Implementation': implementation_names,
         'Solver': solver_names,
         'Iteration time (s)': times,
         'Iteration time standard error (s)': time_stderrs,

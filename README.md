@@ -225,6 +225,51 @@ python scripts/open-spiel-solve.py \
     > data/pyspiel/battleship-huge.json
 ```
 
+Solve games using OpenSpiel (Python).
+
+```console
+python scripts/open-spiel-solve.py \
+    kuhn_poker \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/kuhn-poker.json
+python scripts/open-spiel-solve.py \
+    leduc_poker \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/leduc-poker.json
+python scripts/open-spiel-solve.py \
+    liars_dice \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/liars-dice.json
+python scripts/open-spiel-solve.py \
+    'battleship(board_height=2,board_width=2,ship_sizes=[2],ship_values=[1],num_shots=3)' \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/battleship-tiny.json
+python scripts/open-spiel-solve.py \
+    'battleship(board_height=3,board_width=2,ship_sizes=[2],ship_values=[1],num_shots=3)' \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/battleship-small.json
+python scripts/open-spiel-solve.py \
+    'battleship(board_height=4,board_width=4,ship_sizes=[1],ship_values=[1],num_shots=2)' \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/battleship-medium.json
+python scripts/open-spiel-solve.py \
+    'battleship(board_height=3,board_width=3,ship_sizes=[1;2],ship_values=[1;1],num_shots=2)' \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/battleship-large.json
+python scripts/open-spiel-solve.py \
+    'battleship(board_height=3,board_width=2,ship_sizes=[2],ship_values=[1],num_shots=4)' \
+    open_spiel.python.algorithms.cfr.CFRSolver \
+    8 \
+    > data/open-spiel/battleship-huge.json
+```
+
 Summarize results.
 
 ```console
@@ -254,12 +299,16 @@ python scripts/summary.py \
     data/pyspiel/battleship-medium.json \
     data/pyspiel/battleship-large.json \
     data/pyspiel/battleship-huge.json \
+    data/open-spiel/kuhn-poker.json \
+    data/open-spiel/leduc-poker.json \
+    data/open-spiel/liars-dice.json \
+    data/open-spiel/battleship-tiny.json \
+    data/open-spiel/battleship-small.json \
+    data/open-spiel/battleship-medium.json \
+    data/open-spiel/battleship-large.json \
+    data/open-spiel/battleship-huge.json \
     > data/summary.csv
-python scripts/plot.py \
-    figures/iteration-time-plot.pdf \
-    figures/memory-usage-plot.pdf \
-    figures/cuda-memory-usage-plot.pdf \
-    < data/summary.csv
+python scripts/plot.py figures/plot.pdf < data/summary.csv
 python scripts/latex.py < data/summary.csv > data/latex.tex
 ```
 
