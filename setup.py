@@ -4,13 +4,13 @@ from setuptools import find_packages, setup
 
 setup(
     name='gpugt',
-    version='0.0.0',
+    version='0.0.0.dev0',
     description=(
         'An open-source Python implementation of GPU-accelerated'
         ' counterfactual regret minimization'
     ),
-    long_description=open('README.rst').read(),
-    long_description_content_type='text/x-rst',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url='https://github.com/uoftcprg/gpugt',
     author='Universal, Open, Free, and Transparent Computer Poker Research Group',
     author_email='juhok@andrew.cmu.edu',
@@ -61,9 +61,10 @@ setup(
     },
     packages=find_packages(),
     install_requires=[
+        'cupy-cuda13x>=13.6.0,<14',
+        'noregret~=0.0.0.dev1',
         'numpy>=2.0,<3',
         'scipy>=1.14.0,<2',
-        'noregret~=0.0.0.dev1',
     ],
     python_requires='>=3.11',
 )
