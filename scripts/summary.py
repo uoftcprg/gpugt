@@ -81,7 +81,7 @@ def main():
         times.append(fmean(times_))
         time_stderrs.append(sem(times_).item())
         used_bytes.append(data.get('used_bytes', 0))
-        ru_maxrsss.append(data['ru_maxrss'])
+        ru_maxrsss.append(data['ru_maxrss'] * 1024)
 
     data = {
         'Game size (# nodes)': state_counts,
