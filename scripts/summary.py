@@ -18,13 +18,13 @@ IMPLEMENTATION_NAMES = {
 }
 SOLVER_NAMES = {
     'gpugt.regret_minimizers.CounterfactualRegretMinimization': (
-        'Sequence-form (GPU)'
+        'Ours (parallelized)'
     ),
     'noregret.regret_minimizers.CounterfactualRegretMinimization': (
-        'Sequence-form (CPU)'
+        'Ours (unparallelized)'
     ),
-    'pyspiel.CFRSolver': 'Classical (C++)',
-    'open_spiel.python.algorithms.cfr.CFRSolver': 'Classical (Python)',
+    'pyspiel.CFRSolver': 'OpenSpiel (C++)',
+    'open_spiel.python.algorithms.cfr.CFRSolver': 'OpenSpiel (Python)',
 }
 ITERATION_COUNT = int(argv[1])
 DATA_PATHNAMES = argv[2:]
