@@ -9,9 +9,6 @@ PLOT_FILENAME = argv[1]
 
 def main():
     df = pd.read_csv(stdin, index_col=0)
-
-    sns.set_theme()
-
     fig, axes = plt.subplots(1, 3, figsize=(17, 5))
 
     sns.lineplot(
