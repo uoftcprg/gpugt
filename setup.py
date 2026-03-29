@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='gpugt',
-    version='0.0.0.dev0',
+    version='0.0.0.dev1',
     description=(
         'An open-source Python implementation of GPU-accelerated'
         ' counterfactual regret minimization'
@@ -62,7 +62,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'cupy-cuda13x>=13.6.0,<14',
-        'noregret~=0.0.0.dev2',
+        'noregret~=0.0.0.dev3',
         'numpy>=2.0,<3',
         'scipy>=1.14.0,<2',
     ],
