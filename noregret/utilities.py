@@ -104,6 +104,15 @@ def split(values, counts):
 
 
 def sample(values, probabilities):
+    """Sample a random value as per the probabilities.
+
+    >>> sample(range(5), [0, 0, 1, 0, 0])
+    2
+
+    :param values: Values to be sampled from.
+    :param probabilities: The probabilities of sampling each value.
+    :return: The sampled value.
+    """
     return choices(values, probabilities)[0]
 
 
