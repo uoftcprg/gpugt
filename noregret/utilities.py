@@ -45,17 +45,23 @@ def euclidean_projection_on_probability_simplex(input_):
 
 
 def stationary_distribution(stochastic_matrix):
-    P = stochastic_matrix
+    """Calculate a stationary distribution of a right stochastic matrix.
 
-    if not np.allclose(P.sum(1), 1):
-        raise ValueError('matrix not left stochastic')
+    >>> stationary_distribution(np.array([[1, 1, 1], [3, 0, 0], [3, 0, 0]]) / 3)  # noqa: E501
+    array([0.6, 0.2, 0.2])
 
-    eigenvalues, eigenvectors = LA.eig(P.T)
+    :param stochastic_matrix: The right stochastic matrix.
+    :return: A stationary distribution.
+    """
+    if not np.allclose(stochastic_matrix.sum(1), 1):
+        raise ValueError('matrix not right stochastic')
+
+    eigenvalues, eigenvectors = LA.eig(stochastic_matrix.T)
     pi = eigenvectors[:, np.isclose(eigenvalues, 1)][:, 0]
     pi /= pi.sum()
     pi = pi.real
 
-    assert np.allclose(pi @ P, pi)
+    assert np.allclose(pi @ stochastic_matrix, pi)
 
     return pi
 
