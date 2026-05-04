@@ -8,6 +8,11 @@ PLOT_FILENAME = argv[1]
 
 
 def main():
+    plt.rcParams['legend.fontsize'] = 15
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.rcParams['font.size'] = 15
+
     df = pd.read_csv(stdin, index_col=0)
     fig, axes = plt.subplots(1, 3, figsize=(17, 5))
 

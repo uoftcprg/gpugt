@@ -26,8 +26,7 @@ SOLVER_NAMES = {
     'pyspiel.CFRSolver': 'OpenSpiel (C++)',
     'open_spiel.python.algorithms.cfr.CFRSolver': 'OpenSpiel (Python)',
 }
-ITERATION_COUNT = int(argv[1])
-DATA_PATHNAMES = argv[2:]
+DATA_PATHNAMES = argv[1:]
 
 
 def main():
@@ -71,9 +70,7 @@ def main():
         else:
             solver_name = SOLVER_NAMES[data['solver_import_string']]
 
-        assert len(data['times']) >= ITERATION_COUNT
-
-        times_ = data['times'][:ITERATION_COUNT]
+        times_ = data['times']
 
         state_counts.append(state_count)
         implementation_names.append(implementation_name)

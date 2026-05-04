@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, BooleanOptionalAction
+from itertools import count
 from json import dump
 from pathlib import Path
 from resource import getrusage, RUSAGE_SELF
@@ -6,7 +7,7 @@ from sys import stdout
 from time import time
 
 from noregret.utilities import import_string
-from tqdm import trange
+from tqdm import trange, tqdm
 import cupy as cp
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -18,6 +19,7 @@ def parse_args():
     parser.add_argument('game_path', type=Path)
     parser.add_argument('game_import_string')
     parser.add_argument('regret_minimizer_import_string')
+    parser.add_argument('total_time', type=int)
     parser.add_argument('iteration_count', type=int)
     parser.add_argument('-a', '--alternate', action=BooleanOptionalAction)
     parser.add_argument('-e', '--exploitabilities', type=Path)
@@ -51,10 +53,13 @@ def main():
     checkpoint = 1
     iterations = []
     times = []
+    wc_times = []
     exploitabilities = []
     values = []
+    initial_time = time()
+    pbar = tqdm(total=args.total_time)
 
-    for iteration in trange(1, args.iteration_count + 1):
+    for iteration in count(1):
         begin_time = time()
 
         if args.alternate:
@@ -80,31 +85,56 @@ def main():
 
         end_time = time()
         time_ = end_time - begin_time
+        wc_time = end_time - initial_time
+        m = min(int(wc_time), args.total_time)
+        pbar.update(m - pbar.n)
         average_row_strategy = row_cfr.average_strategy
         average_column_strategy = column_cfr.average_strategy
-        average_strategies = average_row_strategy, average_column_strategy
+        average_strategies = (
+            average_row_strategy.copy(),
+            average_column_strategy.copy(),
+        )
+        terminate = (
+            wc_time >= args.total_time
+            and iteration >= args.iteration_count
+        )
 
-        if iteration == checkpoint and args.exploitabilities:
-            exploitability = game.exploitability(*average_strategies)
+        if (iteration == checkpoint or terminate) and args.exploitabilities:
+            exploitability = average_strategies
             checkpoint *= 2
         else:
             exploitability = None
 
-        value = game.row_value(*average_strategies)
+        if args.values:
+            value = game.row_value(*average_strategies)
+        else:
+            value = None
 
         iterations.append(iteration)
         times.append(time_)
-        exploitabilities.append(
-            None if exploitability is None else exploitability.item(),
-        )
-        values.append(value.item())
+        wc_times.append(wc_time)
+        exploitabilities.append(exploitability)
+        values.append(None if value is None else value.item())
+
+        if terminate:
+            break
+
+    pbar.close()
 
     used_bytes = memory_pool.used_bytes()
     total_bytes = memory_pool.total_bytes()
     n_free_blocks = pinned_memory_pool.n_free_blocks()
     ru_maxrss = getrusage(RUSAGE_SELF).ru_maxrss
+
+    for i in trange(len(exploitabilities)):
+        exploitability = exploitabilities[i]
+
+        if exploitability is not None:
+            exploitabilities[i] = game.exploitability(*exploitability).item()
+
     data = {
         'Iteration': iterations,
+        'Wall-clock time': wc_times,
         'Exploitability': exploitabilities,
         'Value': values,
     }
@@ -131,10 +161,12 @@ def main():
         'game_path': str(args.game_path),
         'game_import_string': args.game_import_string,
         'regret_minimizer_import_string': args.regret_minimizer_import_string,
-        'iteration_count': args.iteration_count,
         'alternate': args.alternate,
+        'total_time': args.total_time,
+        'iteration_count': args.iteration_count,
         'iterations': iterations,
         'times': times,
+        'wc_times': wc_times,
         'exploitabilities': exploitabilities,
         'values': values,
         'row_sequences': list(row_sequences),
