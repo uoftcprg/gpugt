@@ -27,7 +27,7 @@ def main():
     )
     axes[0].set_xscale('log')
     axes[0].set_yscale('log')
-    axes[0].set_title('Iteration time versus game size')
+    axes[0].set_title('Iteration time vs. game size')
     sns.lineplot(
         df,
         x='Game size (# nodes)',
@@ -39,7 +39,7 @@ def main():
     )
     axes[1].set_xscale('log')
     axes[1].set_yscale('log')
-    axes[1].set_title('Memory usage versus game size')
+    axes[1].set_title('Memory usage vs. game size')
     sns.lineplot(
         df,
         x='Game size (# nodes)',
@@ -50,7 +50,7 @@ def main():
     )
     axes[2].set_xscale('log')
     axes[2].set_yscale('log')
-    axes[2].set_title('CUDA memory usage versus game size')
+    axes[2].set_title('CUDA memory usage vs. game size')
     sns.move_legend(axes[2], 'center left', bbox_to_anchor=(1, 0.5))
     fig.tight_layout()
     fig.savefig(PLOT_FILENAME)
