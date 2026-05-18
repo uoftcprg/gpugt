@@ -357,7 +357,15 @@ python scripts/plot2.py \
     1000 \
     'Kuhn poker' \
     data/kuhn-poker.csv \
-    'Leduc poker' \
+    'Leduc poker' \@misc{kim2026parallelizingcounterfactualregretminimization,
+      title={Parallelizing Counterfactual Regret Minimization}, 
+      author={Juho Kim and Tuomas Sandholm},
+      year={2026},
+      eprint={2605.14277},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2605.14277}, 
+}
     data/leduc-poker.csv \
     "Liar's dice" \
     data/liars-dice.csv \
@@ -379,13 +387,13 @@ python scripts/plot3.py \
 If you use GPUGT in your research, please cite our preprint:
 
 ```bibtex
-@misc{kim2024gpuacceleratedcounterfactualregretminimization,
-      title={GPU-Accelerated Counterfactual Regret Minimization},
-      author={Juho Kim},
-      year={2024},
-      eprint={2408.14778},
+@misc{kim2026parallelizingcounterfactualregretminimization,
+      title={Parallelizing Counterfactual Regret Minimization}, 
+      author={Juho Kim and Tuomas Sandholm},
+      year={2026},
+      eprint={2605.14277},
       archivePrefix={arXiv},
-      primaryClass={cs.GT},
-      url={https://arxiv.org/abs/2408.14778},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2605.14277}, 
 }
 ```
