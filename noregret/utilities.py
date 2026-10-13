@@ -1,6 +1,7 @@
 """Module for utilities."""
 from abc import ABC, abstractmethod
 from importlib import import_module
+from warnings import warn
 
 
 class Wrapper:
@@ -72,3 +73,12 @@ def tuple_or_none(values):
     :return: Tuple or ``None``.
     """
     return None if values is None else tuple(values)
+
+
+def recommend(object_path):
+    """Recommend an object.
+
+    :param object_path: Import path of the object.
+    :return: ``None``.
+    """
+    warn(f'\'{object_path}\' is recommended.')

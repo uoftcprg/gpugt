@@ -77,6 +77,7 @@ from noregret.solvers import (
 )
 from noregret.utilities import (
     import_object,
+    recommend,
     Serializable,
     tuple_or_none,
     Wrapper,
@@ -208,6 +209,7 @@ __all__ = (
     'ProbabilitySimplexSwapRegretMinimizer',
     'PureCoordination',
     'RandomActionAbstraction',
+    'recommend',
     'RegretMatching',
     'RegretMatchingPlus',
     'regret_minimization',

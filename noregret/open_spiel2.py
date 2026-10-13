@@ -5,6 +5,7 @@ from ordered_set import OrderedSet
 from pyspiel import exploitability, GameType, load_game
 
 from noregret.games.black_box import BlackBoxGame
+from noregret.utilities import recommend
 
 
 @dataclass
@@ -68,9 +69,12 @@ class OpenSpielGame(BlackBoxGame):
     def chance_probability(self, node, action):
         np = self.kernel.numpy
         dtype = self.kernel.data_type
-        p = node.chance_outcomes()[self.actions(node).index(action)][1]
 
-        return np.array(p, dtype)
+        recommend('noregret.open_spiel2.OpenSpielGame.chance_probabilities')
+
+        ps = node.chance_outcomes()[self.actions(node).index(action)][1]
+
+        return np.array(ps, dtype)
 
     def chance_probabilities(self, node):
         np = self.kernel.numpy
