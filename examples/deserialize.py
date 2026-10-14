@@ -29,7 +29,7 @@ def main():
             zip(repeat(OPEN_SPIEL_PATH), OPEN_SPIEL_GAMES),
             zip(repeat(POKERKIT_PATH), POKERKIT_GAMES),
     ):
-        with open(path / f'{name}.json', 'rb') as file:
+        with open(path / f'{name}.json') as file:
             game = nr.EFG_2p0s.loads(KER, file.read())
 
         R_row = nr.CFR_plus(KER, game.row_sequence_form_polytope, gamma=2)

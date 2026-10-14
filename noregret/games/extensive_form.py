@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from io import BytesIO
 
 from ordered_set import OrderedSet
-from orjson import dumps, loads
 from scipy.sparse import load_npz, save_npz
+from ujson import dumps, loads
 
 from noregret.games.multilinear import (
     MultilinearGame,
@@ -79,7 +79,7 @@ class ExtensiveFormGame(MultilinearGame, Serializable):
             'sequence_form_polytopes': list(map(raw_sfp, sfps)),
         }
 
-        return dumps(data, list)
+        return dumps(data, default=list)
 
     def to_behavioral_form(self, strategy_profile):
         """Convert strategy profile to behavioral-form strategy profile.

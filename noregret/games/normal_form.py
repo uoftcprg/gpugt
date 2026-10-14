@@ -4,7 +4,7 @@ from functools import partial
 from pathlib import Path
 
 from ordered_set import OrderedSet
-from orjson import dumps, loads, OPT_SERIALIZE_NUMPY
+from ujson import dumps, loads
 
 from noregret.games.multilinear import (
     MultilinearGame,
@@ -49,9 +49,9 @@ class NormalFormGame(MultilinearGame, Serializable):
         return cls(kernel, payoffs, actions)
 
     def dumps(self):
-        data = {'payoffs': self.payoffs, 'actions': self.actions}
+        data = {'payoffs': self.payoffs.tolist(), 'actions': self.actions}
 
-        return dumps(data, list, OPT_SERIALIZE_NUMPY)
+        return dumps(data, default=list)
 
 
 @dataclass
@@ -132,12 +132,12 @@ def matrix_game(kernel, matrix):
 
 
 def _2p_nfg(name, kernel):
-    with open(Path(__file__).parent / f'examples/{name}.json', 'rb') as file:
+    with open(Path(__file__).parent / f'examples/{name}.json') as file:
         return TwoPlayerNormalFormGame.loads(kernel, file.read())
 
 
 def _2p0s_nfg(name, kernel):
-    with open(Path(__file__).parent / f'examples/{name}.json', 'rb') as file:
+    with open(Path(__file__).parent / f'examples/{name}.json') as file:
         return TwoPlayerZeroSumNormalFormGame.loads(kernel, file.read())
 
 

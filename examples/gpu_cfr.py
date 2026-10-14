@@ -1,7 +1,7 @@
 """Run GPU-accelerated CFR."""
 from sys import stdout
 
-from orjson import dumps, OPT_SERIALIZE_NUMPY
+from ujson import dumps
 import noregret as nr
 
 CPU_KER = nr.FPKer()
@@ -23,7 +23,7 @@ def main():
         'Expected utility': GAME.expected_row_utility(x_bar, y_bar).item(),
     }
 
-    stdout.buffer.write(dumps(data, option=OPT_SERIALIZE_NUMPY))
+    stdout.write(dumps(data, default=lambda a: a.tolist()))
 
 
 if __name__ == '__main__':

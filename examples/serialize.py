@@ -50,13 +50,13 @@ def main():
         game = nr.OpenSpielGame(KER, game)
         game = nr.to_efg(KER, game)
 
-        with open(OPEN_SPIEL_PATH / f'{name}.json', 'wb') as file:
+        with open(OPEN_SPIEL_PATH / f'{name}.json', 'w') as file:
             file.write(game.dumps())
 
     for name, game_type in tqdm(POKERKIT_GAME_TYPES.items()):
         game = nr.PokerKitGame(KER, game_type).to_extensive_form()
 
-        with open(POKERKIT_PATH / f'{name}.json', 'wb') as file:
+        with open(POKERKIT_PATH / f'{name}.json', 'w') as file:
             file.write(game.dumps())
 
 
